@@ -1,8 +1,8 @@
 import Database from "better-sqlite3";
-import { resolve } from 'path'
+import { resolve } from "path";
 
-const dbPath = resolve(__dirname , 'images.db')
-const db = new Database(dbPath)
+const dbPath = resolve(__dirname, "images.db");
+const db = new Database(dbPath);
 
 db.exec(`
     CREATE TABLE IF NOT EXISTS images (
@@ -11,10 +11,10 @@ db.exec(`
     path TEXT NOT NULL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
- `)
+ `);
 
-db.pragma('journal_mode = WAL')
-db.pragma('synchronous = NORMAL')
-db.pragma('busy_timeout = 3000') 
+db.pragma("journal_mode = WAL");
+db.pragma("synchronous = NORMAL");
+db.pragma("busy_timeout = 3000");
 
-export default db
+export default db;

@@ -1,5 +1,5 @@
-import myFunc from "../server"
+import myFunc from "../server";
 
-it('expect myFunc(5) to be 25' , () => {
-    expect(myFunc(5)).toEqual(25)
-}) 
+it("expect myFunc(5) to be 25", () => {
+  expect(myFunc(5)).toEqual(25);
+});
