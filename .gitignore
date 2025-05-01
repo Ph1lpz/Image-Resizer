@@ -2,6 +2,10 @@
 /backend/node_modules/
 /backend/dist/
 /backend/public/images/*
+/backend/src/db/*.db
+/backend/src/db/*.db-shm
+/backend/src/db/*.db-wal
+
 
 # Frontend
 /frontend/node_modules/

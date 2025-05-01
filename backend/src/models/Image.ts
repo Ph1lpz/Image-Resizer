@@ -1,10 +1,10 @@
 import db from "../db/db";
 
-export const Image = {
+const Image = {
   create: (name: string, path: string) => {
     const insert = db.prepare(`
             INSERT INTO images (name, path) 
-            VALUES (?, ?, ?)
+            VALUES (?, ?)
           `);
     const result = insert.run(name, path);
     return result.lastInsertRowid;
@@ -26,3 +26,5 @@ export const Image = {
     return result.changes > 0;
   },
 };
+
+export default Image;

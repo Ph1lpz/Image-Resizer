@@ -14,7 +14,6 @@ export default [
     },
   },
 
-  // TypeScript configuration
   {
     files: ["**/*.ts"],
     plugins: {
@@ -27,18 +26,17 @@ export default [
       },
     },
     rules: {
-        '@typescript-eslint/no-unused-vars': [
-          'warn',
-          { 
-            argsIgnorePattern: '^_',
-            varsIgnorePattern: '^_',
-            caughtErrorsIgnorePattern: '^_'
-          }
-        ]
-      }
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+    },
   },
 
-  // Test files configuration (Jasmine)
   {
     files: ["**/*.spec.ts", "**/*Spec.ts", "**/tests/**/*.ts"],
     languageOptions: {
@@ -59,7 +57,6 @@ export default [
     },
   },
 
-  // Ignore patterns
   {
     ignores: ["dist/", "node_modules/"],
   },
