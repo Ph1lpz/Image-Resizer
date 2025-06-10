@@ -1,9 +1,11 @@
 import Image from "../models/Image";
-import { join, extname } from "path";
+import apicache from "apicache";
+import { join } from "path";
 import { unlink } from "fs/promises";
 import { Request, Response } from "express";
-
-export function getImages(req: Request, res: Response) {
+import { IMAGE } from "../models/Image";
+let clearCache = apicache.clear;
+export function getImages(_req: Request, res: Response) {
   try {
     const images = Image.getAll();
     res.status(200).json(images);
@@ -15,10 +17,14 @@ export function getImages(req: Request, res: Response) {
 }
 export function getImageById(req: Request, res: Response) {
   const { id } = req.params;
+  if (!id || isNaN(Number(id))) {
+    res.status(400).send(`Image with id ${id} is not found`);
+    return;
+  }
   try {
     const image = Image.getImageById(Number(id));
     if (image == null) {
-      res.status(400).send(`Image with id ${id} is not found`);
+      res.status(404).send(`Image with id ${id} is not found`);
       return;
     }
     res.status(200).json(image);
@@ -40,17 +46,10 @@ export function uploadImage(req: Request, res: Response) {
     return;
   }
 
-  const fileExtention: any = extname(req.file.filename);
-  const validExtensions = [".png", ".jpg", ".jpeg", ".gif"];
-  if (
-   !validExtensions.includes(fileExtention)
-  ) {
-    res.status(400).send(`${fileExtention} is not image extention`);
-    return;
-  }
   const path = `/images/${req.file?.filename}`;
   try {
     const lastInsertRowid = Image.create(name, path);
+    clearCache("/images");
     res.status(201).json(`Image created with id: ${lastInsertRowid}`);
   } catch (e: any) {
     res
@@ -66,35 +65,58 @@ export function editImageName(req: Request, res: Response) {
     res.status(400).send("New name is required");
     return;
   }
-  try {
-    const image = Image.edit(name, Number(id));
-    if (image == false) {
-      res.status(400).send(`Image with id ${id} is not found`);
-      return;
-    }
-    res.status(200).send(`Image with id ${id} edited successfully`);
-  } catch (e: any) {
-    res
-      .status(500)
-      .json({ message: "Error while sending the image", error: e.message });
-  }
-}
-
-export async function deleteImage(req: Request, res: Response) {
-  const { id } = req.params;
-  const { path } = req.body;
-  if(!path){
-    res.status(400).send('There is no path');
+  if (!id || isNaN(Number(id))) {
+    res.status(400).send(`image id cannot be ${id}`);
     return;
   }
   try {
-    const image = Image.delete(Number(id));
-    if (image == false) {
-      res.status(400).send(`Image with id ${id} is not found`);
+    const isUpdated = Image.edit(name, Number(id));
+    if (!isUpdated) {
+      res.status(404).send(`Image with id ${id} is not found`);
       return;
     }
-    const fullPath = join(__dirname, "..", "..", "public", path);
+    clearCache("/images");
+    res.status(200).send(`Image with id ${id} edited successfully`);
+  } catch (e: any) {
+    const errMessage: string = e.message;
+    if (errMessage.includes("this.getIndex")) {
+      res.status(200).send(`Image with id ${id} edited successfully`);
+      return;
+    }
+    res
+      .status(500)
+      .json({ message: "Error while sending the image", error: errMessage });
+  }
+}
+export async function deleteImage(req: Request, res: Response) {
+  const { id } = req.params;
+  if (!id || isNaN(Number(id))) {
+    res.status(400).send("Invalid image ID");
+    return;
+  }
+  const imageId = Number(id);
+  const image: IMAGE | null = Image.getImageById(imageId);
+  if (!image) {
+    res.status(404).send(`Image with id ${id} not found`);
+    return;
+  }
+  const imagesCount = Image.countImagesByOriginalPath(image.originalPath);
+  const isDeleted = Image.delete(imageId);
+  if (isDeleted == false) {
+    res.status(404).send(`Error while deleting image with id ${imageId}`);
+    return;
+  }
+  try {
+    const fullPath = join(__dirname, "..", "../public", image.path);
+    if (image.originalPath && imagesCount === 1) {
+      await unlink(fullPath);
+      await unlink(image.originalPath);
+      clearCache("/images");
+      res.status(200).send(`Image with id ${id} deleted successfully`);
+      return;
+    }
     await unlink(fullPath);
+    clearCache("/images");
     res.status(200).send(`Image with id ${id} deleted successfully`);
   } catch (e: any) {
     res
