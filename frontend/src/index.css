@@ -1,2 +1,16 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: cupcake --default,dark,valentine,retro 
+}
+
+[data-theme="valentine"] {
+  .inputImage {
+    color: white;
+  }
+}
+
+[data-theme="dark"] {
+  .resizebg {
+    @apply text-gray-700 bg-gray-700
+  }
+}

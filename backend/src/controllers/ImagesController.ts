@@ -1,10 +1,9 @@
 import Image from "../models/Image";
-import apicache from "apicache";
 import { join } from "path";
 import { unlink } from "fs/promises";
 import { Request, Response } from "express";
 import { IMAGE } from "../models/Image";
-let clearCache = apicache.clear;
+
 export function getImages(_req: Request, res: Response) {
   try {
     const images = Image.getAll();
@@ -49,7 +48,7 @@ export function uploadImage(req: Request, res: Response) {
   const path = `/images/${req.file?.filename}`;
   try {
     const lastInsertRowid = Image.create(name, path);
-    clearCache("/images");
+    
     res.status(201).json(`Image created with id: ${lastInsertRowid}`);
   } catch (e: any) {
     res
@@ -75,7 +74,7 @@ export function editImageName(req: Request, res: Response) {
       res.status(404).send(`Image with id ${id} is not found`);
       return;
     }
-    clearCache("/images");
+    ;
     res.status(200).send(`Image with id ${id} edited successfully`);
   } catch (e: any) {
     const errMessage: string = e.message;
@@ -111,12 +110,12 @@ export async function deleteImage(req: Request, res: Response) {
     if (image.originalPath && imagesCount === 1) {
       await unlink(fullPath);
       await unlink(image.originalPath);
-      clearCache("/images");
+      ;
       res.status(200).send(`Image with id ${id} deleted successfully`);
       return;
     }
     await unlink(fullPath);
-    clearCache("/images");
+    ;
     res.status(200).send(`Image with id ${id} deleted successfully`);
   } catch (e: any) {
     res

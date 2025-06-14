@@ -4,9 +4,8 @@ import sharp from "sharp";
 import Image from "../models/Image";
 import { IMAGE } from "../models/Image";
 import { copyFile } from "fs/promises";
-import apicache from "apicache";
 
-let clearCache = apicache.clear;
+
 export async function resize(req: Request, res: Response) {
   const { width, height, name, id } = req.body;
   if (!width || !height) {
@@ -42,7 +41,7 @@ export async function resize(req: Request, res: Response) {
           `/images/resized-${width}x${height}-${imageName}`,
           image.originalPath,
         );
-        clearCache("/images");
+        
         res.json({
           resizedImage: `/images/resized-${width}x${height}-${imageName}`,
           message: "Image resized successfully",
@@ -69,7 +68,7 @@ export async function resize(req: Request, res: Response) {
           `/images/resized-${width}x${height}-${imageName}`,
           copiedImgPath,
         );
-        clearCache("/images");
+        
         res.json({
           resizedImage: `/images/resized-${width}x${height}-${imageName}`,
           message: "Image resized successfully",
@@ -105,7 +104,7 @@ export async function resize(req: Request, res: Response) {
     `/images/resized-${width}x${height}-${req.file.filename}`,
     inputPath,
   );
-  clearCache("/images");
+  
   res.json({
     resizedImage: `/images/resized-${width}x${height}-${req.file.filename}`,
     message: "Image resized successfully",
