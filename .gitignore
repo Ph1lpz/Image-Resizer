@@ -5,7 +5,7 @@
 /backend/src/db/*.db
 /backend/src/db/*.db-shm
 /backend/src/db/*.db-wal
-
+!/backend/public/images/.gitkeep
 
 # Frontend
 /frontend/node_modules/

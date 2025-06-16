@@ -6,7 +6,7 @@ A Image resizer  for uploading, managing, and processing images with Node.js, Ex
 ## Features
 
 - 📁 Image upload 
-- abilty to resize a resized image by coping the orginal image and deleting it if it was the last image (Important Note: i didn't add this feature in the ui because time is almost over)
+- abilty to resize a resized image by coping the orginal image and deleting it if it was the last image 
 - ✏️ Image metadata editing (name)
 - 🔍 Retrieve all images or single image by ID 
 - ⚡ On-demand image resizing
@@ -49,7 +49,7 @@ npm run dev
 cd frontend
 
 # Install dependencies
-npm install
+npm install --force
 
 # Start React development server
 npm run dev

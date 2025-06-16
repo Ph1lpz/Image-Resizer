@@ -6,7 +6,7 @@ import { IMAGE } from "../models/Image";
 import { copyFile } from "fs/promises";
 
 
-export async function resize(req: Request, res: Response) {
+export async function resize(req: Request, res: Response):Promise<void> {
   const { width, height, name, id } = req.body;
   if (!width || !height) {
     res.status(400).send("There is no width or height");
@@ -111,7 +111,7 @@ export async function resize(req: Request, res: Response) {
   });
 }
 
-async function handleResize(
+export async function handleResize(
   width: number,
   height: number,
   inputPath: string,

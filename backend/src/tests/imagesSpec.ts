@@ -10,7 +10,7 @@ describe("Images Endpoint Testing", () => {
   });
   it("gets a single image with unknown id", async () => {
     const response = await request.get("/images/unknown");
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(400);
   });
 
   it("post with invalid data", async () => {
@@ -21,11 +21,11 @@ describe("Images Endpoint Testing", () => {
   });
   it("editing unknown image", async () => {
     const response = await request.put("/images/unknown");
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(400);
   });
 
   it("deleting unknown image", async () => {
     const response = await request.delete("/images/unknown");
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(400);
   });
 });

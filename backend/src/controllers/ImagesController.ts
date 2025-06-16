@@ -4,7 +4,7 @@ import { unlink } from "fs/promises";
 import { Request, Response } from "express";
 import { IMAGE } from "../models/Image";
 
-export function getImages(_req: Request, res: Response) {
+export function getImages(_req: Request, res: Response):void {
   try {
     const images = Image.getAll();
     res.status(200).json(images);
@@ -14,7 +14,7 @@ export function getImages(_req: Request, res: Response) {
       .json({ message: "Error while sending the images", error: e.message });
   }
 }
-export function getImageById(req: Request, res: Response) {
+export function getImageById(req: Request, res: Response):void {
   const { id } = req.params;
   if (!id || isNaN(Number(id))) {
     res.status(400).send(`Image with id ${id} is not found`);
@@ -33,7 +33,7 @@ export function getImageById(req: Request, res: Response) {
       .json({ message: "Error while sending the image", error: e.message });
   }
 }
-export function uploadImage(req: Request, res: Response) {
+export function uploadImage(req: Request, res: Response):void {
   if (!req.file) {
     res.status(400).send("No image uploaded");
     return;
@@ -57,15 +57,15 @@ export function uploadImage(req: Request, res: Response) {
   }
 }
 
-export function editImageName(req: Request, res: Response) {
+export function editImageName(req: Request, res: Response):void {
   const { id } = req.params;
+  if (!id || isNaN(Number(id))) {
+    res.status(400).send(`image id cannot be ${id}`);
+    return;
+  }
   const { name } = req.body;
   if (!name) {
     res.status(400).send("New name is required");
-    return;
-  }
-  if (!id || isNaN(Number(id))) {
-    res.status(400).send(`image id cannot be ${id}`);
     return;
   }
   try {
@@ -87,7 +87,7 @@ export function editImageName(req: Request, res: Response) {
       .json({ message: "Error while sending the image", error: errMessage });
   }
 }
-export async function deleteImage(req: Request, res: Response) {
+export async function deleteImage(req: Request, res: Response):Promise<void> {
   const { id } = req.params;
   if (!id || isNaN(Number(id))) {
     res.status(400).send("Invalid image ID");

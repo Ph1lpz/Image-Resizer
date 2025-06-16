@@ -9,6 +9,7 @@ const app = express();
 app.use(cors({ origin: "http://localhost:5173" }));
 const staticFilesPath = join(__dirname, "..", "public", "images");
 app.use(express.json());
+
 app.use(
   "/static/images",
   express.static(staticFilesPath, {
